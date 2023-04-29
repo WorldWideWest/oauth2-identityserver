@@ -1,6 +1,9 @@
+using Authentication.API.Configuration;
 using Authentication.Database;
 using Authentication.Models.Configuration;
 using Authentication.Models.Entities.Identity;
+using Duende.IdentityServer.EntityFramework.DbContexts;
+using Duende.IdentityServer.EntityFramework.Mappers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,6 +53,43 @@ namespace Authentication.API.Extensions
             .AddAspNetIdentity<User>();
             
             return services;
+        }
+
+        public static void EnsureSeedData(WebApplication app, IConfiguration configuration)
+        {
+            using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+
+            scope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
+            var context = scope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
+            
+            context.Database.Migrate();
+            if (!context.Clients.Any())
+            {
+                foreach (var client in IdentityServer.Clients)
+                    context.Clients.Add(client.ToEntity());
+                context.SaveChanges();
+            }
+
+            if (!context.IdentityResources.Any())
+            {
+                foreach (var resource in IdentityServer.IdentityResources)
+                    context.IdentityResources.Add(resource.ToEntity());
+                context.SaveChanges();
+            }
+
+            if (!context.ApiScopes.Any())
+            {
+                foreach (var apiScope in IdentityServer.ApiScopes)
+                    context.ApiScopes.Add(apiScope.ToEntity());
+                context.SaveChanges();
+            }
+
+            if (!context.ApiResources.Any())
+            {
+                foreach (var resource in IdentityServer.ApiResources)
+                    context.ApiResources.Add(resource.ToEntity());
+                context.SaveChanges();
+            }
         }
     }
 }

@@ -20,6 +20,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseIdentityServer();
+
+Identity.EnsureSeedData(app, builder. Configuration);
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
