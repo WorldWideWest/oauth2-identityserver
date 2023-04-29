@@ -1,6 +1,6 @@
 #!/bin/bash
 
-Solution='./Authentication'
+Solution='./Authentication.sln'
 if [ ! -d "$Solution" ]
 then
     # More about creating a solution here https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-sln?source=recommendations
