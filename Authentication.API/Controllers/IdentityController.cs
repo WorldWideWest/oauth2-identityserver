@@ -103,5 +103,26 @@ namespace Authentication.API.Controllers
                 throw ex;
             }
         }
+
+        [HttpPost("password/change")]
+        [ProducesResponseType(typeof(IdentityResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IdentityResult>> ChangePasswordAsync([FromBody] ChangePassword request)
+        {
+            try
+            {
+                var result = await _identityService.ChangePasswordAsync(request).ConfigureAwait(false);
+                
+                if(!result.Succeeded)
+                    return BadRequest(result.Errors);
+                
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(ChangePasswordAsync));
+                throw ex;
+            }
+        }
     }
 }

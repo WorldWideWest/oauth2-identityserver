@@ -164,12 +164,53 @@ namespace Authentication.Service
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message, nameof(VerifyEmailAsync));
+                _logger.LogError(ex, ex.Message, nameof(VerifyPasswordAsync));
                 throw ex;
             }
         }
 
+        public async Task<IdentityResult> ChangePasswordAsync(ChangePassword request)
+        {
+            try
+            {
+                User user = await _userManager.FindByEmailAsync(request.Email);
+                if (user is null)
+                {   
+                    IdentityError error = new()
+                    {
+                        Code = "404",
+                        Description = "User not found",
+                    };
 
+                    return IdentityResult.Failed(error);
+                }
 
+                var verifyOldPasswordResult = await _userManager.CheckPasswordAsync(user, request.OldPassword);
+                if(!verifyOldPasswordResult)
+                {
+                    IdentityError error = new()
+                    {
+                        Code = "409",
+                        Description = "Password Not Matching",
+                    };
+
+                    return IdentityResult.Failed(error); 
+                }
+
+                var newPasswordHash = _passwordHasher.HashPassword(user, request.NewPassword);
+                user.PasswordHash = newPasswordHash;
+
+                var result = await _userManager.UpdateAsync(user);
+                if(!result.Succeeded)
+                    return IdentityResult.Failed(result.Errors.ToArray());
+
+                return IdentityResult.Success;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(ChangePasswordAsync));
+                throw ex;
+            }
+        }
     }
 }

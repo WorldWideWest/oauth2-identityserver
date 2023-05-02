@@ -9,5 +9,6 @@ namespace Authentication.Models.Interfaces.Services
         Task<IdentityResult> VerifyEmailAsync(EmailVerification request);
         Task<IdentityResult> ResetPasswordAsync(PasswordReset request);
         Task<IdentityResult> VerifyPasswordAsync(VerifyPassword request);
+        Task<IdentityResult> ChangePasswordAsync(ChangePassword request);
     }
 }

@@ -19,4 +19,18 @@ namespace Authentication.Models.DTOs.Requests
         [Compare(nameof(NewPassword))]
         public string ConfirmPassword { get; set; }
     }
+
+    public class ChangePassword : PasswordReset
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+        [Required]
+        public string OldPassword { get; set; }
+        [Required]
+        public string NewPassword { get; set; }
+        [Required]
+        [Compare(nameof(NewPassword))]
+        public string ConfirmPassword { get; set; }
+    }
 }
