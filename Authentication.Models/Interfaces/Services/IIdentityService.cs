@@ -7,5 +7,7 @@ namespace Authentication.Models.Interfaces.Services
     {
         Task<IdentityResult> RegisterAsync(UserRegistration request);
         Task<IdentityResult> VerifyEmailAsync(EmailVerification request);
+        Task<IdentityResult> ResetPasswordAsync(PasswordReset request);
+        Task<IdentityResult> VerifyPasswordAsync(VerifyPassword request);
     }
 }

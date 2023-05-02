@@ -110,5 +110,66 @@ namespace Authentication.Service
             }
         }
 
+        public async Task<IdentityResult> ResetPasswordAsync(PasswordReset request)
+        {
+            try
+            {
+                User user = await _userManager.FindByEmailAsync(request.Email);
+                if (user is null)
+                {
+                    IdentityError error = new()
+                    {
+                        Code = "404",
+                        Description = "User Not Found"
+                    };
+
+                    return IdentityResult.Failed(error);
+                }
+
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                await _emailService.SendAsync(user.Email, "Password Reset", $"{user.Email}, Token: {token}");
+
+                return IdentityResult.Success;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(ResetPasswordAsync));
+                throw ex;
+            }
+        }
+
+        public async Task<IdentityResult> VerifyPasswordAsync(VerifyPassword request)
+        {
+            try
+            {
+                User user = await _userManager.FindByEmailAsync(request.Email);
+                if (user is null)
+                {   
+                    IdentityError error = new()
+                    {
+                        Code = "404",
+                        Description = "User Not Found"
+                    }; 
+
+                    return IdentityResult.Failed(error);
+                }
+
+                var result = await _userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
+ 
+                if(!result.Succeeded)
+                    return IdentityResult.Failed(result.Errors.ToArray());
+
+                return IdentityResult.Success;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(VerifyEmailAsync));
+                throw ex;
+            }
+        }
+
+
+
     }
 }
