@@ -10,11 +10,5 @@ namespace Authentication.Models.Entities.Identity
 
         [MaxLength(50)]
         public string LastName  { get; set; }
-
-        public string Picture { get; set; }
-        
-        [ProtectedPersonalData]
-        [MaxLength(100)]
-        public string Address { get; set; }
     }
 }
