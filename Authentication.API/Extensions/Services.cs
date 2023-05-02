@@ -1,6 +1,11 @@
 using Authentication.Database;
 using Authentication.Models.Configuration;
+using Authentication.Models.Entities.Identity;
+using Authentication.Models.Interfaces.Services;
+using Authentication.Service;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NETCore.MailKit.Extensions;
 
 namespace Authentication.API.Extensions
 {
@@ -10,12 +15,18 @@ namespace Authentication.API.Extensions
         {
             var environment = configuration.GetSection("Application").Get<Application>();
             var connectionString = environment.ConnectionStrings.DefaultConnection;
+
+            services.AddMailKit(config => 
+                config.UseMailKit(environment.MailSettings));
             
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
             Identity.Configure(services, configuration);
 
+            services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
+
+            services.AddScoped<IIdentityService, IdentityService>();
 
             return services;
         }

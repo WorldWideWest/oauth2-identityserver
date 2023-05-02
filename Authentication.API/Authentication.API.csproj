@@ -18,12 +18,14 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
+    <PackageReference Include="NETCore.MailKit" Version="2.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Authentication.Database\Authentication.Database.csproj" />
     <ProjectReference Include="..\Authentication.Models\Authentication.Models.csproj" />
+    <ProjectReference Include="..\Authentication.Services\Authentication.Services.csproj" />
   </ItemGroup>
 
 </Project>
