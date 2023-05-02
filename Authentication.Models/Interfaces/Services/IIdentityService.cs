@@ -6,5 +6,6 @@ namespace Authentication.Models.Interfaces.Services
     public interface IIdentityService
     {
         Task<IdentityResult> RegisterAsync(UserRegistration request);
+        Task<IdentityResult> VerifyEmailAsync(EmailVerification request);
     }
 }

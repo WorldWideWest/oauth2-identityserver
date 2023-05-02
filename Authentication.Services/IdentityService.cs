@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using Authentication.Models.DTOs.Requests;
 using Authentication.Models.Entities.Identity;
 using Authentication.Models.Interfaces.Services;
+using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using NETCore.MailKit.Core;
@@ -70,5 +72,43 @@ namespace Authentication.Service
                 throw ex;
             }
         }
+
+        public async Task<IdentityResult> VerifyEmailAsync(EmailVerification request)
+        {
+            try
+            {
+                User user = await _userManager.FindByEmailAsync(request.Email);
+                if (user is null)
+                {
+                    IdentityError error = new()
+                    {
+                        Code = "404",
+                        Description = "User Not Found"
+                    };
+
+                    return IdentityResult.Failed(error);
+                }
+
+                var result = await _userManager.ConfirmEmailAsync(user, request.Token).ConfigureAwait(false);
+
+                if(!result.Succeeded)
+                    return IdentityResult.Failed(result.Errors.ToArray());
+
+                var claimsResult = await _userManager.AddClaimsAsync(user, new Claim[]{
+                    new Claim(JwtClaimTypes.Email, user.Email),
+                }).ConfigureAwait(false);
+
+                if (!claimsResult.Succeeded)
+                    throw new Exception(claimsResult.Errors.ToString());
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(VerifyEmailAsync));
+                throw ex;
+            }
+        }
+
     }
 }

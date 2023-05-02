@@ -23,7 +23,7 @@ namespace Authentication.API.Controllers
         [HttpPost("register")]
         [ProducesResponseType(typeof(IdentityResult), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IdentityResult>> RegisterAsync(UserRegistration request)
+        public async Task<ActionResult<IdentityResult>> RegisterAsync([FromBody] UserRegistration request)
         {
             try
             {
@@ -41,5 +41,25 @@ namespace Authentication.API.Controllers
             }
         }
 
+        [HttpPost("verify")]
+        [ProducesResponseType(typeof(IdentityResult), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IdentityResult>> VerifyEmailAsync([FromBody] EmailVerification request)
+        {
+            try
+            {
+                var result = await _identityService.VerifyEmailAsync(request).ConfigureAwait(false);
+                
+                if(!result.Succeeded)
+                    return BadRequest(result.Errors);
+                
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(VerifyEmailAsync));
+                throw ex;
+            }
+        }
     }
 }
