@@ -126,7 +126,7 @@ namespace Authentication.Service
                     return IdentityResult.Failed(error);
                 }
 
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user).ConfigureAwait(false);
 
                 await _emailService.SendAsync(user.Email, "Password Reset", $"{user.Email}, Token: {token}");
 
@@ -155,7 +155,7 @@ namespace Authentication.Service
                     return IdentityResult.Failed(error);
                 }
 
-                var result = await _userManager.ResetPasswordAsync(user, request.Token, request.NewPassword);
+                var result = await _userManager.ResetPasswordAsync(user, request.Token, request.NewPassword).ConfigureAwait(false);
  
                 if(!result.Succeeded)
                     return IdentityResult.Failed(result.Errors.ToArray());
@@ -200,7 +200,7 @@ namespace Authentication.Service
                 var newPasswordHash = _passwordHasher.HashPassword(user, request.NewPassword);
                 user.PasswordHash = newPasswordHash;
 
-                var result = await _userManager.UpdateAsync(user);
+                var result = await _userManager.UpdateAsync(user).ConfigureAwait(false);
                 if(!result.Succeeded)
                     return IdentityResult.Failed(result.Errors.ToArray());
 
@@ -212,5 +212,35 @@ namespace Authentication.Service
                 throw ex;
             }
         }
+
+        public async Task<IdentityResult> DeleteUserAsync(DeleteUser request)
+        {
+            try
+            {
+                User user = await _userManager.FindByEmailAsync(request.Email);
+                if (user is null)
+                {   
+                    IdentityError error = new()
+                    {
+                        Code = "404",
+                        Description = "User not found",
+                    };
+
+                    return IdentityResult.Failed(error);
+                }
+
+                var result = await _userManager.DeleteAsync(user).ConfigureAwait(false);
+                if(!result.Succeeded)
+                    return IdentityResult.Failed(result.Errors.ToArray());
+
+                return IdentityResult.Success;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(DeleteUserAsync));
+                throw ex;
+            }
+        }
+        
     }
 }

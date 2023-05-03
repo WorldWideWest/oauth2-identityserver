@@ -124,5 +124,26 @@ namespace Authentication.API.Controllers
                 throw ex;
             }
         }
+
+        [HttpPost("deactivate")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IdentityResult>> DeleteUserAsync([FromBody] DeleteUser request)
+        {
+            try
+            {
+                var result = await _identityService.DeleteUserAsync(request).ConfigureAwait(false);
+                
+                if(!result.Succeeded)
+                    return BadRequest(result.Errors);
+                
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(DeleteUserAsync));
+                throw ex;
+            }
+        }
     }
 }

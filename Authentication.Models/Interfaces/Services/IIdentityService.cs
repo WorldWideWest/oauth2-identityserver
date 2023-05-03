@@ -10,5 +10,6 @@ namespace Authentication.Models.Interfaces.Services
         Task<IdentityResult> ResetPasswordAsync(PasswordReset request);
         Task<IdentityResult> VerifyPasswordAsync(VerifyPassword request);
         Task<IdentityResult> ChangePasswordAsync(ChangePassword request);
+        Task<IdentityResult> DeleteUserAsync(DeleteUser request);
     }
 }
