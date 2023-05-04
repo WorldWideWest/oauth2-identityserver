@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Models", "Au
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Services", "Authentication.Services\Authentication.Services.csproj", "{961C98D8-3281-4D90-94B2-E864F236AF96}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Tests", "Authentication.Tests\Authentication.Tests.csproj", "{CF174A60-AB77-47F8-BFA0-5C9A8F9DB020}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Tests", "Authentication.Tests\Authentication.Tests.csproj", "{63D2B091-BCE9-42B5-8181-5E86F0C6FDDB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,9 +38,9 @@ Global
 		{961C98D8-3281-4D90-94B2-E864F236AF96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{961C98D8-3281-4D90-94B2-E864F236AF96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{961C98D8-3281-4D90-94B2-E864F236AF96}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CF174A60-AB77-47F8-BFA0-5C9A8F9DB020}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CF174A60-AB77-47F8-BFA0-5C9A8F9DB020}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CF174A60-AB77-47F8-BFA0-5C9A8F9DB020}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CF174A60-AB77-47F8-BFA0-5C9A8F9DB020}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63D2B091-BCE9-42B5-8181-5E86F0C6FDDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63D2B091-BCE9-42B5-8181-5E86F0C6FDDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63D2B091-BCE9-42B5-8181-5E86F0C6FDDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63D2B091-BCE9-42B5-8181-5E86F0C6FDDB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

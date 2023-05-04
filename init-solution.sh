@@ -20,7 +20,7 @@ then
     dotnet new classlib --name Authentication.Services
 
     echo -e "\e[36mCreating the project [Authentication.Tests]\e[0m"
-    dotnet new classlib --name Authentication.Tests
+    dotnet new mstest --name Authentication.Tests
 
     # Connecting the projects to the solution https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-sln?source=recommendations#add
     echo -e "\e[36mAdded [Authentication.API] to [Authentication] solution\e[0m"

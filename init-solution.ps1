@@ -18,7 +18,7 @@ if(!(Test-Path $Solution))
     dotnet new classlib --name Authentication.Services
 
     Write-Host "Creating the project [Authentication.Tests]" -f Cyan
-    dotnet new classlib --name Authentication.Tests
+    dotnet new mstest --name Authentication.Tests
 
     # Connecting the projects to the solution https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-sln#add
     Write-Host "Added [Authentication.API] to [Authentication] solution" -f Cyan
