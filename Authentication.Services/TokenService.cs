@@ -42,12 +42,8 @@ namespace Authentication.Services
 
                     return CustomToken.Failed(error);
                 }
-                    
-                return new() {
-                    AccessToken = result.AccessToken,
-                    RefreshToken = result.RefreshToken,
-                    ExpiresIn = result.ExpiresIn
-                };
+
+                return CustomToken.Success(result.AccessToken, result.RefreshToken, result.ExpiresIn);
             }
             catch (Exception ex)
             {
@@ -55,7 +51,6 @@ namespace Authentication.Services
                 throw ex;
             }
         }
-
         private async Task<TokenResponse> AcquireTokenAsync(Token request)
         {
             try

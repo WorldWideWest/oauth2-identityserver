@@ -18,7 +18,15 @@ namespace Authentication.Models.DTOs.Responses
         
         public IEnumerable<IdentityError> Errors => _errors;
 
-        public static CustomToken Success => _success;
+        public static CustomToken Success(string accessToken, string refreshToken, int expiresIn)
+        {
+            return new CustomToken() {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                ExpiresIn = expiresIn,
+                Succeeded = true
+            };
+        }
 
         public static CustomToken Failed(params IdentityError[] errors)
         {
