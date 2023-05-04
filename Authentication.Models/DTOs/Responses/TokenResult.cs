@@ -3,34 +3,28 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Authentication.Models.DTOs.Responses
 {
-    public class CustomToken
+    public class TokenResult
     {
         public string AccessToken { get; set; }
         public string? RefreshToken { get; set; }
         public int ExpiresIn { get; set; }
-
-        private static readonly CustomToken _success = new CustomToken { Succeeded = true };
-        
         private readonly List<IdentityError> _errors = new List<IdentityError>();
         
         [JsonIgnore]
-        public bool Succeeded { get; protected set; }
+        public bool Succeeded { get; protected set; } = true;
         
         public IEnumerable<IdentityError> Errors => _errors;
 
-        public static CustomToken Success(string accessToken, string refreshToken, int expiresIn)
-        {
-            return new CustomToken() {
+        public static TokenResult Success(string accessToken, string refreshToken, int expiresIn) =>
+            new TokenResult() {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
                 ExpiresIn = expiresIn,
-                Succeeded = true
             };
-        }
 
-        public static CustomToken Failed(params IdentityError[] errors)
+        public static TokenResult Failed(params IdentityError[] errors)
         {
-            var result = new CustomToken { Succeeded = false };
+            var result = new TokenResult { Succeeded = false };
 
             if (errors != null)
                 result._errors.AddRange(errors);

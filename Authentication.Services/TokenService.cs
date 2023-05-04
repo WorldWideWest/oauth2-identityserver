@@ -5,7 +5,6 @@ using Authentication.Models.DTOs.Responses;
 using Authentication.Models.Interfaces.Services;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -26,7 +25,7 @@ namespace Authentication.Services
         }
 
 
-        public async Task<CustomToken> TokenAsync(Token request)
+        public async Task<TokenResult> TokenAsync(Token request)
         {
             try
             {
@@ -40,10 +39,10 @@ namespace Authentication.Services
                         Description = result.Error
                     };
 
-                    return CustomToken.Failed(error);
+                    return TokenResult.Failed(error);
                 }
 
-                return CustomToken.Success(result.AccessToken, result.RefreshToken, result.ExpiresIn);
+                return TokenResult.Success(result.AccessToken, result.RefreshToken, result.ExpiresIn);
             }
             catch (Exception ex)
             {
@@ -51,6 +50,54 @@ namespace Authentication.Services
                 throw ex;
             }
         }
+
+        public async Task<TokenResult> RevokeAsync(Token request)
+        {
+            try
+            {
+                var client = _clientFactory.CreateClient();
+                var disco = await GetDiscoveryCacheAsync();
+
+                if (disco.IsError)
+                {
+                    IdentityError error = new() 
+                    {
+                        Code = disco.HttpErrorReason,
+                        Description = disco.Error
+                    };
+
+                    return TokenResult.Failed(error);
+                }
+
+                var result = await client.RevokeTokenAsync(new()
+                {
+                    Address = disco.RevocationEndpoint,
+                    ClientId = request.ClientId,
+                    ClientSecret = request.ClientSecret,
+                    Token = request.RefreshToken
+                }).ConfigureAwait(false);
+
+
+                if(result.IsError)
+                {
+                    IdentityError error = new()
+                    {
+                        Code = result.HttpErrorReason,
+                        Description = result.Error
+                    };
+
+                    return TokenResult.Failed(error);
+                }
+                
+                return new TokenResult();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(RevokeAsync));
+                throw ex;
+            }
+        }
+
         private async Task<TokenResponse> AcquireTokenAsync(Token request)
         {
             try

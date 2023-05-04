@@ -152,9 +152,9 @@ namespace Authentication.API.Controllers
         }
         
         [HttpPost("token")]
-        [ProducesResponseType(typeof(CustomToken), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(TokenResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<CustomToken>> TokenAsync([FromBody] Token request)
+        public async Task<ActionResult<TokenResult>> TokenAsync([FromBody] Token request)
         {
             try
             {
@@ -173,9 +173,9 @@ namespace Authentication.API.Controllers
         }
 
         [HttpPost("token/refresh")]
-        [ProducesResponseType(typeof(CustomToken), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(TokenResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<CustomToken>> RefreshTokenAsync([FromBody] Token request)
+        public async Task<ActionResult<TokenResult>> RefreshTokenAsync([FromBody] Token request)
         {
             try
             {
@@ -196,22 +196,22 @@ namespace Authentication.API.Controllers
         }
 
         [HttpPost("token/revoke")]
-        [ProducesResponseType(typeof(CustomToken), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<CustomToken>> RevokeTokenAsync([FromBody] Token request)
+        public async Task<ActionResult<TokenResult>> RevokeTokenAsync([FromBody] Token request)
         {
             try
             {
-                var result = await _tokenService.TokenAsync(request).ConfigureAwait(false);
+                var result = await _tokenService.RevokeAsync(request).ConfigureAwait(false);
                 
                 if(!result.Succeeded)
                     return BadRequest(result.Errors);
                 
-                return Ok(result);
+                return NoContent();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, ex.Message, nameof(TokenAsync));
+                _logger.LogError(ex, ex.Message, nameof(RevokeTokenAsync));
                 throw ex;
             }
         }

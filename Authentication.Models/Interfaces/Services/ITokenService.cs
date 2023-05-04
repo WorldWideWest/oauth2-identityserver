@@ -5,6 +5,7 @@ namespace Authentication.Models.Interfaces.Services
 {
     public interface ITokenService
     {
-        Task<CustomToken> TokenAsync(Token request);
+        Task<TokenResult> TokenAsync(Token request);
+        Task<TokenResult> RevokeAsync(Token request);
     }
 }
