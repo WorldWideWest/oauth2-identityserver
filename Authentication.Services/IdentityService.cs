@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using NETCore.MailKit.Core;
 
-namespace Authentication.Service
+namespace Authentication.Services
 {
     public class IdentityService : IIdentityService
     {

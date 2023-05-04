@@ -4,6 +4,7 @@ using Authentication.Models.Configuration;
 using Authentication.Models.Entities.Identity;
 using Duende.IdentityServer.EntityFramework.DbContexts;
 using Duende.IdentityServer.EntityFramework.Mappers;
+using IdentityModel.Client;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -51,6 +52,14 @@ namespace Authentication.API.Extensions
                 options.EnableTokenCleanup = true;
             })
             .AddAspNetIdentity<User>();
+
+            services.AddSingleton<IDiscoveryCache>(cache =>
+            {
+                var factory = cache.GetRequiredService<IHttpClientFactory>();
+
+                return new DiscoveryCache(
+                    environment.AuthUri, () => factory.CreateClient());
+            });
             
             return services;
         }

@@ -6,6 +6,7 @@ namespace Authentication.Models.Configuration
     {
         public MailKitOptions MailSettings { get; set; }
         public ConnectionStrings ConnectionStrings { get; set; }
+        public string AuthUri { get; set; }
     }
 
     public class ConnectionStrings

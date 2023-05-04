@@ -2,7 +2,7 @@ using Authentication.Database;
 using Authentication.Models.Configuration;
 using Authentication.Models.Entities.Identity;
 using Authentication.Models.Interfaces.Services;
-using Authentication.Service;
+using Authentication.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NETCore.MailKit.Extensions;
@@ -22,11 +22,14 @@ namespace Authentication.API.Extensions
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
+            services.Configure<Application>(configuration.GetSection("Application"));
+
             Identity.Configure(services, configuration);
 
             services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 
             services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<ITokenService, TokenService>();
 
             return services;
         }

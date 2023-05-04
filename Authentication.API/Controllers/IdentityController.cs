@@ -1,4 +1,6 @@
+using Authentication.Models.Constants.Identity;
 using Authentication.Models.DTOs.Requests;
+using Authentication.Models.DTOs.Responses;
 using Authentication.Models.Interfaces.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,13 +13,16 @@ namespace Authentication.API.Controllers
     {
         private readonly ILogger<IdentityController> _logger;
         private readonly IIdentityService _identityService;
+        private readonly ITokenService _tokenService;
 
         public IdentityController(
             ILogger<IdentityController> logger,
-            IIdentityService identityService)
+            IIdentityService identityService,
+            ITokenService tokenService)
         {
             _logger = logger;
             _identityService = identityService;
+            _tokenService = tokenService;
         }
         
         [HttpPost("register")]
@@ -125,7 +130,7 @@ namespace Authentication.API.Controllers
             }
         }
 
-        [HttpPost("deactivate")]
+        [HttpDelete("deactivate")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IdentityResult>> DeleteUserAsync([FromBody] DeleteUser request)
@@ -142,6 +147,71 @@ namespace Authentication.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message, nameof(DeleteUserAsync));
+                throw ex;
+            }
+        }
+        
+        [HttpPost("token")]
+        [ProducesResponseType(typeof(CustomToken), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<CustomToken>> TokenAsync([FromBody] Token request)
+        {
+            try
+            {
+                var result = await _tokenService.TokenAsync(request).ConfigureAwait(false);
+                
+                if(!result.Succeeded)
+                    return BadRequest(result.Errors);
+                
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(TokenAsync));
+                throw ex;
+            }
+        }
+
+        [HttpPost("token/refresh")]
+        [ProducesResponseType(typeof(CustomToken), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<CustomToken>> RefreshTokenAsync([FromBody] Token request)
+        {
+            try
+            {
+                request.GrantType = GrantType.RefreshToken;
+
+                var result = await _tokenService.TokenAsync(request).ConfigureAwait(false);
+                
+                if(!result.Succeeded)
+                    return BadRequest(result.Errors);
+                
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(TokenAsync));
+                throw ex;
+            }
+        }
+
+        [HttpPost("token/revoke")]
+        [ProducesResponseType(typeof(CustomToken), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<IdentityError>), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<CustomToken>> RevokeTokenAsync([FromBody] Token request)
+        {
+            try
+            {
+                var result = await _tokenService.TokenAsync(request).ConfigureAwait(false);
+                
+                if(!result.Succeeded)
+                    return BadRequest(result.Errors);
+                
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message, nameof(TokenAsync));
                 throw ex;
             }
         }
