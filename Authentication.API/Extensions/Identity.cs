@@ -1,4 +1,5 @@
 using Authentication.API.Configuration;
+using Authentication.API.Providers;
 using Authentication.Database;
 using Authentication.Models.Configuration;
 using Authentication.Models.Entities.Identity;
@@ -29,8 +30,11 @@ namespace Authentication.API.Extensions
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;
                 options.Password.RequireDigit = true;
+
+                options.Tokens.EmailConfirmationTokenProvider = "emailconfirmation";
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddTokenProvider<EmailConfirmationTokenProvider<User>>("emailconfirmation")
             .AddDefaultTokenProviders();
 
             services.AddIdentityServer(options =>
