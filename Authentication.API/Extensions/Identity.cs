@@ -37,6 +37,9 @@ namespace Authentication.API.Extensions
             .AddTokenProvider<EmailConfirmationTokenProvider<User>>("emailconfirmation")
             .AddDefaultTokenProviders();
 
+            services.Configure<EmailConfirmationTokenProviderOptions>(options =>
+                options.TokenLifespan = TimeSpan.FromDays(2));
+
             services.AddIdentityServer(options =>
             {
                 options.Events.RaiseErrorEvents = true;
